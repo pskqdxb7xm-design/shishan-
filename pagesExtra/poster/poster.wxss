@@ -1,0 +1,9 @@
+@import "../../app.wxss";
+.page-container { min-height:100vh; background:#fff; }
+.header { display:flex; align-items:center; justify-content:space-between; padding:0 16px 12px; border-bottom:1px solid rgba(229,229,229,0.3); }
+.back-btn { padding:8px; }
+.poster-area { display:flex; justify-content:center; padding:20px; }
+.poster-preview { width:375px; border-radius:8px; box-shadow:0 4px 16px rgba(0,0,0,0.1); }
+.save-area { padding:20px; }
+.save-btn { width:100%; padding:14px; background:#FF6B35; color:#fff; font-size:17px; font-weight:700; border-radius:12px; border:none; text-align:center; }
+.save-btn.disabled { background:#ccc; }

@@ -1,0 +1,141 @@
+<!-- pages/profile/profile.wxml -->
+<!-- 个人主页 -->
+
+<view class="page-container" style="padding-top: {{statusBarHeight + 16}}px;">
+  <!-- 顶部 -->
+  <view class="settings-row">
+    <text style="font-size:17px;font-weight:700;flex:1;text-align:center;">我的</text>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading-state">
+    <text class="text-muted">加载中...</text>
+  </view>
+
+  <!-- 用户信息卡片 -->
+  <block wx:else>
+  <view class="profile-header" bindtap="onTapProfileHeader">
+    <view class="profile-info">
+      <image
+        wx:if="{{userInfo.avatar}}"
+        class="avatar"
+        src="{{userInfo.avatar}}"
+        mode="aspectFill"
+        bindtap="onTapAvatar"
+      />
+      <view wx:else class="avatar avatar-placeholder" bindtap="onTapAvatar">
+        <text class="avatar-text">{{userInfo.nickname ? userInfo.nickname.charAt(0) : '?'}}</text>
+      </view>
+
+      <!-- 游客模式 -->
+      <view wx:if="{{userInfo.isGuest}}" class="text-center mt-4">
+        <text class="text-lg font-bold text-dark">点击登录</text>
+        <text class="bio">登录后查看更多内容</text>
+        <view class="login-hint">点击此处授权登录</view>
+      </view>
+
+      <!-- 已登录 -->
+      <block wx:else>
+        <text class="text-2xl font-bold text-dark mt-4">{{userInfo.nickname || '微信用户'}}</text>
+        <text class="bio">{{userInfo.bio || '这个人很懒，什么都没写'}}</text>
+        <view class="mbti-row" bindtap="onTapEditMbti">
+          <text class="mbti-badge">{{userInfo.mbti || '点击设置 MBTI'}}</text>
+        </view>
+        <!-- 新用户完善资料引导 -->
+        <view wx:if="{{userInfo.isNewUser || (!userInfo.avatar && !userInfo.isGuest)}}" class="complete-hint" bindtap="onTapLogin">
+          <text>完善个人资料，解锁更多功能</text>
+        </view>
+
+        <view class="tag-row">
+          <text wx:for="{{userInfo.tags || []}}" wx:key="*this" class="user-tag">{{item}}</text>
+        </view>
+
+        <!-- 编辑资料入口 -->
+        <view wx:if="{{!userInfo.isGuest}}" class="edit-profile-row" bindtap="onTapEditProfile">
+          <text class="text-sm text-muted">编辑资料（微信号等）</text>
+          <image class="icon-chevron-sm" src="../../images/icon-chevron-right.svg" mode="aspectFit" />
+        </view>
+        <!-- 黑名单管理 -->
+        <view wx:if="{{!userInfo.isGuest}}" class="edit-profile-row" bindtap="onTapBlockList">
+          <text class="text-sm text-muted">黑名单管理</text>
+          <image class="icon-chevron-sm" src="../../images/icon-chevron-right.svg" mode="aspectFit" />
+        </view>
+      </block>
+    </view>
+  </view>
+  </block>
+
+  <!-- 我的活动 -->
+  <view class="activities-section">
+    <text class="section-title">我的活动</text>
+
+    <!-- Tab 切换 -->
+    <view class="profile-tabs">
+      <view
+        class="profile-tab {{activeTab === 'created' ? 'active' : ''}}"
+        bindtap="onTapTab" data-tab="created"
+      >
+        <text>我发起的</text>
+        <text class="tab-count">{{counts.created || 0}}</text>
+      </view>
+      <view
+        class="profile-tab {{activeTab === 'joined' ? 'active' : ''}}"
+        bindtap="onTapTab" data-tab="joined"
+      >
+        <text>我参加的</text>
+        <text class="tab-count">{{counts.joined || 0}}</text>
+      </view>
+      <view
+        class="profile-tab {{activeTab === 'favorited' ? 'active' : ''}}"
+        bindtap="onTapTab" data-tab="favorited"
+      >
+        <text>我的收藏</text>
+        <text class="tab-count">{{counts.favorited || 0}}</text>
+      </view>
+    </view>
+
+    <!-- 列表区域 -->
+    <view wx:if="{{listLoading}}" class="list-loading">
+      <text class="text-sm text-muted">加载中...</text>
+    </view>
+
+    <view wx:elif="{{isEmpty}}" class="empty-state">
+      <text class="text-sm text-muted">
+        {{activeTab === 'created' ? '还没有发布过活动' : (activeTab === 'joined' ? '还没有参加过活动' : '还没有收藏过活动')}}
+      </text>
+    </view>
+
+    <!-- MBTI 选择弹窗 -->
+    <view wx:if="{{showMbtiPicker}}" class="modal-mask" bindtap="onCloseMbtiPicker">
+      <view class="modal-card" catchtap="">
+        <text class="text-lg font-bold text-dark">选择你的 MBTI</text>
+        <view class="mbti-grid">
+          <view wx:for="{{mbtiTypes}}" wx:key="*this" class="mbti-option" bindtap="onSelectMbti" data-mbti="{{item}}">
+            <text class="mbti-option-text">{{item}}</text>
+          </view>
+        </view>
+        <view class="mbti-close" bindtap="onCloseMbtiPicker"><text>取消</text></view>
+      </view>
+    </view>
+
+    <view wx:else class="post-list">
+      <view
+        wx:for="{{postList}}"
+        wx:key="_id"
+        class="post-card"
+        bindtap="onTapPost"
+        data-id="{{item._id}}"
+      >
+        <image class="post-thumb" src="{{item.thumbnail}}" mode="aspectFill" />
+        <view class="post-body">
+          <text class="text-sm font-bold text-dark line-clamp-2">{{item.title}}</text>
+          <view class="post-meta-row">
+            <text class="text-xs text-muted">{{item.time}}</text>
+            <text class="text-xs text-muted">{{item.location}}</text>
+          </view>
+        </view>
+        <image class="icon-chevron" src="../../images/icon-chevron-right.svg" mode="aspectFit" />
+      </view>
+    </view>
+  </view>
+</view>

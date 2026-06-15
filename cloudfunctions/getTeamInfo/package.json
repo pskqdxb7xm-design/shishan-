@@ -1,0 +1,7 @@
+{
+  "name": "getTeamInfo",
+  "version": "1.0.0",
+  "description": "组队信息查询——非对称隐私控制",
+  "main": "index.js",
+  "dependencies": { "wx-server-sdk": "latest" }
+}

@@ -1,0 +1,19 @@
+<!-- pages/poster/poster.wxml -->
+<view class="page-container" style="padding-top:{{statusBarHeight + 12}}px;">
+  <view class="header">
+    <view class="back-btn" bindtap="onTapBack"><text class="text-base text-secondary">‹</text></view>
+    <text class="text-lg font-bold text-dark">生成海报</text>
+    <view style="width:48px;"></view>
+  </view>
+
+  <view class="poster-area">
+    <canvas type="2d" id="posterCanvas" style="width:375px;height:580px;" wx:if="{{!posterUrl}}"></canvas>
+    <image wx:else src="{{posterUrl}}" mode="widthFix" class="poster-preview" show-menu-by-longpress="{{true}}"/>
+  </view>
+
+  <view class="save-area">
+    <button class="save-btn {{saving ? 'disabled' : ''}}" bindtap="onSavePoster" disabled="{{saving}}" loading="{{saving}}">
+      {{saving ? '保存中...' : '保存到相册'}}
+    </button>
+  </view>
+</view>

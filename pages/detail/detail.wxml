@@ -1,0 +1,85 @@
+<view class="pg" style="padding-top:{{statusBarHeight+6}}px;">
+  <view class="hd">
+    <view class="hd-left">
+      <view class="hd-back" bindtap="onTapBack">‹</view>
+      <view class="hd-more" bindtap="onTapMore">···</view>
+    </view>
+    <text class="hd-title">详情</text>
+    <view style="width:87px;"></view>
+  </view>
+
+  <view wx:if="{{loading}}" style="flex:1;display:flex;align-items:center;justify-content:center;"><text>加载中...</text></view>
+
+  <scroll-view wx:else class="bd" scroll-y enhanced>
+    <!-- 图片 -->
+    <swiper class="sw" indicator-dots="{{post.images.length>1}}" indicator-color="rgba(255,255,255,0.5)" indicator-active-color="#fff">
+      <swiper-item wx:for="{{post.images}}" wx:key="*this"><image class="sw-img" src="{{item}}" mode="aspectFill" bindtap="onPreviewImage" data-src="{{item}}"/></swiper-item>
+    </swiper>
+    <view class="tag-row"><text class="tag">{{post.category}}</text><text class="tag tag-s">{{post.status==='recruiting'?'招募中':post.status==='full'?'已满员':'已关闭'}}</text></view>
+
+    <!-- 信息 -->
+    <view class="info">
+      <text class="t">{{post.title}}</text>
+      <view class="row"><image class="ic" src="../../images/icon-calendar.svg" mode="aspectFit"/><text>{{post.time}}</text></view>
+      <view class="row"><image class="ic" src="../../images/icon-map-pin.svg" mode="aspectFit"/><text>{{post.location}}</text></view>
+      <view class="row" style="margin-top:4px;"><text class="ct">{{post.currentCount}}/{{post.targetCount}}人</text></view>
+    </view>
+
+    <!-- 作者 -->
+    <view class="author">
+      <image wx:if="{{post.owner.avatar}}" class="av" src="{{post.owner.avatar}}" mode="aspectFill"/>
+      <view wx:else class="av av-pl"></view>
+      <view><text class="an">{{post.owner.nickname}}</text><text class="am">队长</text></view>
+    </view>
+
+    <!-- 操作栏 -->
+    <view class="act-bar">
+      <view class="act-btn" bindtap="onTapPoster">🎨海报</view>
+      <view class="act-btn {{favorited?'on':''}}" bindtap="onToggleFavorite">{{favorited?'★已收藏':'☆收藏'}}</view>
+      <view wx:if="{{userRole==='guest'&&post.status==='recruiting'}}" class="act-main" bindtap="onTapApply">申请加入</view>
+      <view wx:elif="{{userRole==='guest'&&post.status!=='recruiting'}}" class="act-main off">招募已结束</view>
+      <view wx:elif="{{myApplyStatus==='pending'}}" class="act-main off">等待审核</view>
+      <view wx:elif="{{userRole==='member'}}" class="act-main ok">已加入✓</view>
+      <view wx:else class="act-main off">管理报名</view>
+    </view>
+
+    <!-- 评论 -->
+    <view class="cmt-hd">评论({{commentCount}})</view>
+    <view wx:if="{{commentTree.length===0}}" style="text-align:center;padding:30px;color:#9ca3af;">暂无评论</view>
+    <view wx:for="{{commentTree}}" wx:key="_id" class="cmt">
+      <view class="cmt-main">
+        <view class="cmt-l"><image wx:if="{{item.userAvatar}}" class="cmt-av" src="{{item.userAvatar}}" mode="aspectFill"/><view wx:else class="cmt-av cmt-av-pl"></view><text wx:if="{{item.userMbti}}" class="cmt-mb">{{item.userMbti}}</text></view>
+        <view class="cmt-r"><view class="cmt-t"><text class="cmt-n">{{item.userName}}</text><text class="cmt-tm">{{item.timeText}}</text></view><text>{{item.content}}</text><text class="cmt-rp" bindtap="onTapReply" data-parent-id="{{item._id}}" data-reply-to="{{item.userName}}">回复</text></view>
+      </view>
+      <view wx:if="{{item.replies.length>0}}" class="rpls">
+        <view wx:for="{{item.replies}}" wx:key="_id" wx:for-item="rp" class="rpl">
+          <view class="rpl-l"><image wx:if="{{rp.userAvatar}}" class="rpl-av" src="{{rp.userAvatar}}" mode="aspectFill"/><view wx:else class="rpl-av rpl-av-pl"></view></view>
+          <view class="rpl-r"><view class="cmt-t"><text class="cmt-n">{{rp.userName}}</text><text wx:if="{{rp.replyToName}}">回复{{rp.replyToName}}</text><text class="cmt-tm">{{rp.timeText}}</text></view><text>{{rp.content}}</text></view>
+        </view>
+      </view>
+    </view>
+    <view style="height:60px;"></view>
+  </scroll-view>
+
+  <!-- 输入栏 -->
+  <view class="ib">
+    <input class="ib-inp" placeholder="{{replyPlaceholder}}" value="{{inputText}}" bindinput="onInputText" bindconfirm="onSubmitComment" confirm-type="send" adjust-position="{{true}}" cursor-spacing="12" maxlength="200"/>
+    <view class="ib-send {{inputText?'on':''}}" bindtap="onSubmitComment">发送</view>
+  </view>
+
+  <!-- 报名弹窗 -->
+  <view wx:if="{{showApplyModal}}" class="modal-mask">
+    <view class="modal-card">
+      <text style="font-size:18px;font-weight:700;">申请加入</text>
+      <textarea style="width:100%;margin:14px 0;padding:10px;border:1px solid #e5e5e5;border-radius:8px;min-height:70px;" placeholder="留言给队长" value="{{applyMessage}}" bindinput="onInputApplyMessage" maxlength="100"/>
+      <view style="display:flex;align-items:center;gap:8px;margin-bottom:14px;" bindtap="onToggleConsent">
+        <view style="width:20px;height:20px;border:2px solid #d1d5db;border-radius:4px;display:flex;align-items:center;justify-content:center;{{applyConsent?'background:#FF6B35;border-color:#FF6B35':''}}"><text wx:if="{{applyConsent}}" style="color:#fff;font-size:13px;">✓</text></view>
+        <text style="font-size:12px;color:#6b7280;">同意队长查看我的微信号</text>
+      </view>
+      <view style="display:flex;gap:10px;">
+        <view style="flex:1;text-align:center;padding:12px;background:#f3f4f6;border-radius:8px;" bindtap="onCloseApplyModal">取消</view>
+        <view style="flex:1;text-align:center;padding:12px;background:{{applyConsent?'#FF6B35':'#d1d5db'}};color:#fff;border-radius:8px;" bindtap="onConfirmApply">确认</view>
+      </view>
+    </view>
+  </view>
+</view>

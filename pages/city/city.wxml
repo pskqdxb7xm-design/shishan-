@@ -1,0 +1,53 @@
+<view class="page" style="padding-top:{{statusBarHeight+6}}px;">
+  <view class="head">
+    <view class="head-back" bindtap="onTapBack">‹</view>
+    <text class="head-title">选择城市</text>
+    <view style="width:60px;"></view>
+  </view>
+
+  <!-- 搜索 -->
+  <view class="search-bar">
+    <input class="search-input" placeholder="搜索城市名或拼音首字母..." value="{{searchText}}" bindinput="onInputSearch"/>
+  </view>
+
+  <!-- 搜索结果 -->
+  <scroll-view wx:if="{{searchText}}" class="result-list" scroll-y>
+    <view wx:for="{{filtered}}" wx:key="n" class="result-item" bindtap="onSelect" data-city="{{item.n}}">
+      <text>{{item.n}}</text><text class="pingyin">{{item.p}}</text>
+    </view>
+  </scroll-view>
+
+  <scroll-view wx:else class="main-scroll" scroll-y scroll-into-view="{{scrollToId}}" enhanced>
+    <!-- 定位 -->
+    <view class="section">
+      <text class="section-label">📍 GPS 定位城市</text>
+      <view class="locate-row" bindtap="onTapLocate">
+        <text class="locate-city">{{currentCity || '点击定位'}}</text>
+        <text class="locate-refresh">↻ 重新定位</text>
+      </view>
+    </view>
+
+    <!-- 热门城市 -->
+    <view class="section">
+      <text class="section-label">🔥 热门城市</text>
+      <view class="hot-grid">
+        <view wx:for="{{hotCities}}" wx:key="*this" class="hot-item {{currentCity===item?'active':''}}" bindtap="onSelect" data-city="{{item}}">{{item}}</view>
+      </view>
+    </view>
+
+    <!-- A-Z 列表 -->
+    <view wx:for="{{indexList}}" wx:key="*this" wx:for-item="key">
+      <view class="az-letter" id="idx_{{key}}">{{key}}</view>
+      <view wx:for="{{groups[key]}}" wx:key="n" wx:for-item="city" class="city-row" bindtap="onSelect" data-city="{{city.n}}">
+        <text>{{city.n}}</text>
+      </view>
+    </view>
+
+    <view style="height:40px;"></view>
+  </scroll-view>
+
+  <!-- 右侧索引条 -->
+  <view class="index-bar" wx:if="{{!searchText}}">
+    <view wx:for="{{indexList}}" wx:key="*this" class="index-item" bindtap="onTapIndex" data-key="{{item}}">{{item}}</view>
+  </view>
+</view>

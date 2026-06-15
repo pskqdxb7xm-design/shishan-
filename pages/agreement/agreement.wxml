@@ -1,0 +1,49 @@
+<view class="hd" style="padding-top:{{statusBarHeight+6}}px;">
+  <view class="hd-back" bindtap="onTapBack">返回</view>
+  <view style="width:60px;"></view>
+</view>
+<scroll-view style="flex:1;padding:20px;font-size:14px;line-height:2;color:#333;">
+  <text style="font-size:22px;font-weight:700;text-align:center;display:block;margin-bottom:10px;">用户服务协议</text>
+  <text style="color:#9ca3af;text-align:center;display:block;margin-bottom:24px;font-size:12px;">更新日期：2026年6月7日</text>
+
+  <text style="font-weight:700;">一、总则</text>
+  <text>欢迎使用本小程序。您在使用前应仔细阅读本协议，使用即表示您同意本协议的全部条款。</text>
+
+  <text style="font-weight:700;">二、服务内容</text>
+  <text>本小程序为活动组队社交平台，提供发布活动、浏览活动、评论互动、收藏报名等功能。所有内容均由用户自行发布，平台不保证内容的真实性和准确性。</text>
+
+  <text style="font-weight:700;">三、用户行为规范</text>
+  <text>禁止发布违法违规、色情低俗、暴力恐怖、广告骚扰等不良内容。违规内容将被删除，严重违规者将永久封禁。用户间线下活动产生的任何风险由参与方自行承担。</text>
+
+  <text style="font-weight:700;">四、知识产权</text>
+  <text>用户发布的内容，视为授权平台在全球范围内免费使用、复制、修改、发布。用户在平台上发布的内容不得侵犯他人知识产权。</text>
+
+  <text style="font-weight:700;">五、免责声明</text>
+  <text>因不可抗力、系统维护、网络故障等原因导致的服务中断，平台不承担责任。用户之间因线下活动产生的任何纠纷与平台无关。</text>
+
+  <view style="height:40px;"></view>
+
+  <text style="font-size:22px;font-weight:700;text-align:center;display:block;margin-bottom:20px;">隐私政策</text>
+
+  <text style="font-weight:700;">一、信息收集</text>
+  <text>我们收集的信息包括：您注册时提供的昵称、头像；您发布的帖子、评论、图片；您的设备型号和操作系统版本（用于优化体验）。当您使用定位功能时，我们会收集您的地理位置信息以展示同城活动。</text>
+
+  <text style="font-weight:700;">二、信息使用</text>
+  <text>您发布的内容将公开展示给其他用户。您的微信号仅在您明确授权且队长审核通过后才会展示给特定队友，队长可选择是否公开自己的微信号。未经您的授权，我们不会将微信号展示给任何第三方。</text>
+
+  <text style="font-weight:700;">三、信息存储</text>
+  <text>所有用户数据存储于腾讯云微信云开发环境，受微信平台的安全保护。我们采取合理的安全措施保护您的个人信息。</text>
+
+  <text style="font-weight:700;">四、您的权利</text>
+  <text>您可以在个人中心编辑或删除您的个人信息。您可以随时删除您发布的帖子（连带删除相关评论和数据）。您可以通过黑名单功能屏蔽其他用户。</text>
+
+  <text style="font-weight:700;">五、未成年人保护</text>
+  <text>本平台不对未成年人开放。如果您未满18周岁，请在监护人指导下使用。</text>
+
+  <text style="font-weight:700;">六、隐私政策更新</text>
+  <text>我们可能会不时更新本隐私政策，更新后的政策将在本页面发布后立即生效。</text>
+
+  <view style="height:20px;"></view>
+  <text style="color:#9ca3af;text-align:center;display:block;font-size:12px;">如对协议有疑问，请联系平台运营者</text>
+  <view style="height:40px;"></view>
+</scroll-view>

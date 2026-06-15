@@ -1,0 +1,169 @@
+<!-- pages/create/create.wxml -->
+<!-- 发布活动页 -->
+
+<view class="page-container" style="padding-top: {{statusBarHeight + 12}}px;">
+  <!-- 顶部栏 -->
+  <view class="header">
+    <view class="back-btn" bindtap="onTapBack">
+      <text class="text-base text-secondary">‹</text>
+    </view>
+    <text class="text-lg font-bold text-dark">发布活动</text>
+    <view style="width: 48px;"></view>
+  </view>
+
+  <!-- 图片选择区 -->
+  <view class="section">
+    <text class="label">活动图片</text>
+    <view class="image-grid">
+      <!-- 已选图片 -->
+      <view wx:for="{{images}}" wx:key="*this" class="image-item">
+        <image class="preview-img" src="{{item}}" mode="aspectFill" />
+        <view class="img-remove" bindtap="onRemoveImage" data-index="{{index}}">
+          <text class="remove-text">✕</text>
+        </view>
+        <view wx:if="{{uploading}}" class="img-progress">
+          <text class="progress-text">上传中...</text>
+        </view>
+      </view>
+      <!-- 添加按钮 -->
+      <view wx:if="{{images.length < 9}}" class="image-item image-add" bindtap="onChooseImage">
+        <text class="add-icon">+</text>
+        <text class="text-xs text-muted">{{images.length}}/9</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 表单区 -->
+  <view class="section">
+    <text class="label">所在城市</text>
+    <view class="city-picker" bindtap="onTapCity">
+      <text class="city-text">{{city}}</text>
+      <text class="city-arrow">></text>
+    </view>
+  </view>
+
+  <view class="section">
+    <text class="label">性别要求</text>
+    <view class="gender-row">
+      <view wx:for="{{genders}}" wx:key="*this" class="gender-btn {{selectedGender === item ? 'active' : ''}}" bindtap="onTapGender" data-gender="{{item}}"><text>{{item}}</text></view>
+    </view>
+  </view>
+
+  <view class="section">
+    <text class="label">活动标题</text>
+    <input
+      class="form-input"
+      placeholder="请输入活动标题"
+      value="{{title}}"
+      bindinput="onInputTitle"
+      maxlength="50"
+    />
+  </view>
+
+  <view class="section">
+    <text class="label">活动分类</text>
+    <view class="category-select">
+      <view
+        wx:for="{{categories}}"
+        wx:key="*this"
+        class="cat-option {{category === item ? 'active' : ''}}"
+        bindtap="onSelectCategory"
+        data-cat="{{item}}"
+      >
+        <text>{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section">
+    <text class="label">开始时间</text>
+    <view class="time-row">
+      <picker mode="date" value="{{startDate}}" bindchange="onPickStartDate" start="{{today}}">
+        <view class="time-pick">{{startDateText || '选择日期'}}</view>
+      </picker>
+      <picker mode="time" value="{{startTime}}" bindchange="onPickStartTime" start="06:00" end="23:59">
+        <view class="time-pick">{{startTimeText || '选择时间'}}</view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="section">
+    <text class="label">结束时间</text>
+    <view class="time-row">
+      <picker mode="date" value="{{endDate}}" bindchange="onPickEndDate" start="{{startDate || today}}">
+        <view class="time-pick">{{endDateText || '选择日期'}}</view>
+      </picker>
+      <picker mode="time" value="{{endTime}}" bindchange="onPickEndTime" start="06:00" end="23:59">
+        <view class="time-pick">{{endTimeText || '选择时间'}}</view>
+      </picker>
+    </view>
+    <text wx:if="{{activityTime}}" class="time-show">{{activityTime}}{{durationDays ? '  |  共' + durationDays + '天' : ''}}</text>
+  </view>
+
+  <view class="section">
+    <text class="label">活动地点</text>
+    <input
+      class="form-input"
+      placeholder="如：朝阳区·朝阳公园"
+      value="{{location}}"
+      bindinput="onInputLocation"
+    />
+    <view class="locate-tip" bindtap="onChooseLocation">📍 从地图选择位置</view>
+    />
+  </view>
+
+  <view class="section">
+    <text class="label">招募人数（含自己）</text>
+    <input
+      class="form-input"
+      type="number"
+      placeholder="如：5"
+      value="{{targetCount}}"
+      bindinput="onInputTargetCount"
+    />
+  </view>
+
+  <view class="section">
+    <text class="label">联系方式/备注</text>
+    <textarea
+      class="form-textarea"
+      placeholder="如：加我微信xxx进群 / 自备球拍 / 地铁站集合..."
+      value="{{contactInfo}}"
+      bindinput="onInputContactInfo"
+      maxlength="200"
+    />
+  </view>
+
+  <view class="section">
+    <view class="switch-row">
+      <view>
+        <text class="label" style="margin-bottom:4px;">公开我的微信号</text>
+        <text class="text-xs text-muted">让通过的队员可以直接添加我</text>
+      </view>
+      <switch checked="{{ownerShowWechat}}" bindchange="onSwitchWechat" color="#FF6B35"/>
+    </view>
+  </view>
+
+  <!-- 协议勾选框 -->
+  <view class="section">
+    <view class="agreement-row">
+      <view class="consent-box {{agreedTerms ? 'checked' : ''}}" bindtap="onToggleAgreement"><text wx:if="{{agreedTerms}}" class="consent-check">✓</text></view>
+      <text class="text-xs text-secondary">我已阅读并同意</text>
+      <text class="text-xs text-brand" bindtap="onTapAgreement">《用户服务协议》</text>
+      <text class="text-xs text-secondary">和</text>
+      <text class="text-xs text-brand" bindtap="onTapAgreement">《隐私政策》</text>
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="submit-area">
+    <button
+      class="submit-btn {{submitting ? 'disabled' : ''}}"
+      bindtap="onSubmit"
+      disabled="{{submitting || !title}}"
+      loading="{{submitting}}"
+    >
+      {{submitting ? '发布中...' : '发布活动'}}
+    </button>
+  </view>
+</view>

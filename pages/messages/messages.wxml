@@ -1,0 +1,34 @@
+<!-- pages/messages/messages.wxml -->
+<!-- 消息通知中心 -->
+
+<view class="page-container" style="padding-top: {{statusBarHeight + 12}}px;">
+  <view class="header">
+    <text class="text-lg font-bold text-dark">消息</text>
+  </view>
+
+  <view class="content-area">
+    <view wx:if="{{loading}}" class="loading-state"><text class="text-muted">加载中...</text></view>
+
+    <view wx:elif="{{isEmpty}}" class="empty-state">
+      <text>暂无消息</text>
+    </view>
+
+    <block wx:else>
+    <view wx:for="{{notifications}}" wx:key="_id" class="notify-card {{item.is_read ? '' : 'unread'}}" bindtap="onTapNotification" data-id="{{item._id}}" data-post-id="{{item.post_id}}" data-type="{{item.type}}">
+      <view class="notify-left">
+        <image wx:if="{{item.avatar}}" class="notify-avatar" src="{{item.avatar}}" mode="aspectFill"/>
+        <view wx:else class="notify-avatar notify-avatar-pl"><text class="notify-avatar-txt">{{item.nickname.charAt(0)}}</text></view>
+        <view wx:if="{{!item.is_read}}" class="unread-dot"></view>
+      </view>
+      <view class="notify-body">
+        <view class="notify-top">
+          <text class="text-sm font-bold text-dark">{{item.nickname}}</text>
+          <text class="text-xs text-muted" style="margin-left:auto;">{{item.timeText}}</text>
+        </view>
+        <text class="text-sm text-secondary">{{item.typeLabel}}</text>
+        <text class="text-sm text-dark line-clamp-2">{{item.content || item.post_title}}</text>
+      </view>
+    </view>
+    </block>
+  </view>
+</view>

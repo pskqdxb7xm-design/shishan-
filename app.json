@@ -1,0 +1,68 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/detail/detail",
+    "pages/create/create",
+    "pages/messages/messages",
+    "pages/profile/profile",
+    "pages/agreement/agreement",
+    "pages/city/city"
+  ],
+  "subpackages": [
+    {
+      "root": "pagesExtra",
+      "pages": ["poster/poster"]
+    }
+  ],
+  "preloadRule": {
+    "pages/index/index": {
+      "network": "all",
+      "packages": ["pagesExtra"]
+    }
+  },
+  "window": {
+    "navigationStyle": "custom",
+    "backgroundColor": "#ffffff",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#9ca3af",
+    "selectedColor": "#FF6B35",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/tab-home.png",
+        "selectedIconPath": "images/tab-home-active.png"
+      },
+      {
+        "pagePath": "pages/messages/messages",
+        "text": "消息",
+        "iconPath": "images/tab-message.png",
+        "selectedIconPath": "images/tab-message-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "images/tab-user.png",
+        "selectedIconPath": "images/tab-user-active.png"
+      }
+    ]
+  },
+  "__usePrivacyCheck__": true,
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于展示你所在城市附近的活动"
+    },
+    "scope.writePhotosAlbum": {
+      "desc": "用于保存活动海报到你的相册"
+    },
+    "scope.camera": {
+      "desc": "用于拍摄活动照片"
+    }
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

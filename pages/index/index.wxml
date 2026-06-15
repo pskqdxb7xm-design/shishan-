@@ -1,0 +1,91 @@
+<!-- pages/index/index.wxml -->
+<view class="page-container">
+  <view class="header" style="padding-top: {{statusBarHeight + 12}}px;">
+    <!-- 位置 -->
+    <view class="location-row" bindtap="onTapLocation">
+      <text class="text-lg font-bold text-dark">📍 {{city}}</text>
+      <image class="icon-sm" src="../../images/icon-chevron-right.svg" mode="aspectFit" />
+    </view>
+    <!-- 搜索框 -->
+    <view class="search-bar">
+      <image class="search-icon-small" src="../../images/icon-search.svg" mode="aspectFit" />
+      <input class="search-input" placeholder="搜索活动..." value="{{keyword}}" bindinput="onInputSearch" bindconfirm="onSearchConfirm" confirm-type="search" maxlength="30"/>
+      <view wx:if="{{keyword}}" class="clear-btn" bindtap="onClearSearch"><text>✕</text></view>
+    </view>
+  </view>
+
+  <!-- 一级 Tab -->
+  <scroll-view class="cat-tabs" scroll-x enhanced show-scrollbar="{{false}}">
+    <view class="cat-tabs-inner">
+      <view wx:for="{{primaryTabs}}" wx:key="*this" class="cat-tab primary-pill {{activePrimary === item ? 'active' : ''}}" bindtap="onTapPrimary" data-tab="{{item}}"><text>{{item}}</text></view>
+    </view>
+  </scroll-view>
+
+  <!-- 分类标签栏 -->
+  <scroll-view class="cat-tabs" scroll-x enhanced show-scrollbar="{{false}}">
+    <view class="cat-tabs-inner">
+      <view wx:for="{{categories}}" wx:key="*this" class="cat-tab {{activeCategory === item ? 'active' : ''}}" bindtap="onTapCategory" data-cat="{{item}}"><text>{{item}}</text></view>
+    </view>
+  </scroll-view>
+
+  <!-- 骨架屏 -->
+  <view wx:if="{{loading && activities.length === 0}}" class="skeleton-list">
+    <view wx:for="{{[1,2,3]}}" wx:key="*this" class="skeleton-card">
+      <view class="sk-img"></view>
+      <view class="sk-body">
+        <view class="sk-line sk-title"></view>
+        <view class="sk-line sk-meta"></view>
+        <view class="sk-line sk-meta short"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 活动列表 -->
+  <view wx:else class="feed-area">
+    <view wx:if="{{activities.length === 0}}" class="empty-state">
+      <text class="text-muted">{{keyword ? '未找到匹配活动' : '暂无活动，快去发布第一个吧'}}</text>
+    </view>
+
+    <block wx:for="{{activities}}" wx:key="id">
+    <view class="activity-card" bindtap="onTapPost" data-id="{{item._id}}">
+      <view class="swiper-wrapper">
+        <swiper class="card-swiper" indicator-dots="{{item.images.length > 1}}" indicator-color="rgba(255,255,255,0.5)" indicator-active-color="#fff">
+          <swiper-item wx:for="{{item.images}}" wx:key="*this" wx:for-item="img">
+            <image class="card-image" src="{{img}}" mode="aspectFill" lazy-load="{{true}}"/>
+          </swiper-item>
+        </swiper>
+        <view class="category-tag"><text>{{item.category}}</text></view>
+        <view wx:if="{{item.audit_status === 'pending'}}" class="pending-tag"><text>审核中</text></view>
+      </view>
+      <view class="card-body">
+        <view class="card-author">
+          <image wx:if="{{item.authorAvatar}}" class="author-avatar" src="{{item.authorAvatar}}" mode="aspectFill"/>
+          <view wx:else class="author-avatar author-avatar-pl"><text class="author-avatar-txt">{{item.authorName.charAt(0)}}</text></view>
+          <text class="text-sm font-medium text-dark">{{item.authorName}}</text>
+          <text wx:if="{{item.authorMbti}}" class="text-xs mbti-tag">{{item.authorMbti}}</text>
+        </view>
+        <text class="card-title">{{item.title}}</text>
+        <view class="card-meta"><image class="meta-icon" src="../../images/icon-calendar.svg" mode="aspectFit"/><text class="text-sm text-secondary">{{item.time}}</text></view>
+        <view class="card-meta"><image class="meta-icon" src="../../images/icon-map-pin.svg" mode="aspectFit"/><text class="text-sm text-secondary">{{item.location}}</text></view>
+        <view class="card-actions">
+          <text wx:if="{{item.targetCount}}" class="enroll-num">报名人数:{{item.currentCount}}/{{item.targetCount}}</text>
+          <view class="action-btn {{item.favorited ? 'active' : ''}}" catchtap="onToggleFavorite" data-id="{{item._id}}" data-index="{{index}}" style="margin-left:auto;">
+            <text>{{item.favorited ? '★ 已收藏' : '☆ 收藏'}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    </block>
+
+    <!-- 底部加载状态 -->
+    <view class="load-more">
+      <view wx:if="{{loadingMore}}"><text class="text-sm text-muted">加载中...</text></view>
+      <view wx:elif="{{!hasMore && activities.length > 0}}"><text class="text-sm text-muted">没有更多了</text></view>
+    </view>
+    <view style="height:80px;"></view>
+  </view>
+
+  <view class="fab-btn" bindtap="onTapCreate">
+    <image class="fab-icon" src="../../images/icon-plus.svg" mode="aspectFit"/>
+  </view>
+</view>
