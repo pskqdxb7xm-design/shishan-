@@ -108,7 +108,6 @@
       value="{{location}}"
       bindinput="onInputLocation"
     />
-    <view class="locate-tip" bindtap="onChooseLocation">📍 从地图选择位置</view>
     />
   </view>
 

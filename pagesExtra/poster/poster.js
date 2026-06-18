@@ -17,7 +17,7 @@ Page({
     var self = this, id = self.data.post.id;
     wx.cloud.callFunction({ name: 'getWxacode', data: { postId: id } })
       .then(r => { if (r.result && r.result.success) self.setData({ qrcodeUrl: r.result.tempUrl || r.result.fileID }); else throw 0; })
-      .catch(() => { self.setData({ qrcodeUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent('id=' + id) }); })
+      .catch(() => { self.setData({ qrcodeUrl: '' }); })
       .finally(() => setTimeout(() => self.draw(), 300));
   },
 

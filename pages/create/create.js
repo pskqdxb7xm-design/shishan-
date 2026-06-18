@@ -71,16 +71,21 @@ Page({
   },
 
   _checkPermAndRetry: function () {
-    var self = this;
-    wx.getSetting({
-      success: function (s) {
-        if (!s.authSetting['scope.writePhotosAlbum'] && !s.authSetting['scope.camera']) {
-          wx.authorize({ scope: 'scope.writePhotosAlbum', success: function () { self.onChooseImage(); }, fail: function () { wx.showToast({ title: '请在设置中开启相册权限', icon: 'none' }); } });
-        } else {
-          wx.showToast({ title: '选图失败，请检查权限设置', icon: 'none' });
+    wx.showModal({
+      title: '需要相册权限',
+      content: '请在设置中开启相册权限后才能选择图片',
+      confirmText: '去设置',
+      success: function (r) {
+        if (r.confirm) {
+          wx.openSetting({
+            success: function (s) {
+              if (s.authSetting['scope.writePhotosAlbum']) {
+                wx.showToast({ title: '权限已开启，请重新选图', icon: 'success' });
+              }
+            }
+          });
         }
-      },
-      fail: function () { wx.showToast({ title: '选图失败，请重试', icon: 'none' }); }
+      }
     });
   },
 
@@ -188,13 +193,6 @@ Page({
     }
   },
   onInputLocation: function (e) { this.setData({ location: e.detail.value }); },
-  onChooseLocation: function () {
-    var self = this;
-    wx.chooseLocation({
-      success: function (res) { if (res.address) self.setData({ location: res.address || res.name }); },
-      fail: function () {}
-    });
-  },
   onInputTargetCount: function (e) { this.setData({ targetCount: e.detail.value }); },
   onInputContactInfo: function (e) { this.setData({ contactInfo: e.detail.value }); },
   onSwitchWechat: function (e) { this.setData({ ownerShowWechat: e.detail.value }); },
